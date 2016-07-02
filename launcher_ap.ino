@@ -82,9 +82,11 @@ void handleArm(){
   int armCodeVar = server.arg(0).toInt();
   if(armCodeVar == ARMCODE){
      powerStatus = true;
+     Serial.println("armed");
      server.send(200, "text/html", "true");
   }else{
     powerStatus = false;
+    Serial.println("arm failed");
     server.send(400, "text/html", "false");
   }
 }
@@ -93,13 +95,16 @@ void handlePower(){
   int powerCodeVar = server.arg(0).toInt();
   if(powerCodeVar == 1 && powerStatus == true){
     server.send(200, "text/html", "true, on");
-    digitalWrite(armPin, HIGH);
+    digitalWrite(armPin, LOW);
+    Serial.println("power on");
   }else if(powerCodeVar == 0){
     server.send(200, "text/html", "true, off");
-    digitalWrite(armPin, LOW);
+    Serial.println("power off");
+    digitalWrite(armPin, HIGH);
   }else{
     server.send(400, "text/html", "false");
-    digitalWrite(armPin, LOW);
+    Serial.println("power failed");
+    digitalWrite(armPin, HIGH);
   }
 }
 
@@ -120,7 +125,8 @@ void setup() {
   pinMode(latchPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
   pinMode(dataPin, OUTPUT);
-  digitalWrite(armPin, LOW);
+  pinMode(armPin, OUTPUT);
+  digitalWrite(armPin, HIGH);
   
 	delay(1000);
 	Serial.begin(115200);
